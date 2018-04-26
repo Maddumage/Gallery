@@ -17,15 +17,6 @@ public class ImageModel implements Serializable{
     public ImageModel() {
     }
 
-    public ImageModel(String id, String small, String regular, String full, int like, String description) {
-        this.id = id;
-        this.small = small;
-        this.regular = regular;
-        this.full = full;
-        this.like = like;
-        this.description = description;
-    }
-
     public String getId() {
         return id;
     }

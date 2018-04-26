@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -29,16 +29,16 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.MyViewHolder> {
 
     private Context mContext;
-    private ArrayList<FavoriteModel> favouriteEntities;
+    private ArrayList<FavoriteModel> arrayList;
     private PopupWindow mPopupWindow;
     boolean isCloseBtnEnable = true;
     String desc = "";
     Realm realm;
 
     public FavoriteAdapter(Context context, ArrayList<FavoriteModel> favouriteEntities) {
-
+        realm = Realm.getDefaultInstance();
         this.mContext = context;
-        this.favouriteEntities = favouriteEntities;
+        this.arrayList = favouriteEntities;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -64,7 +64,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-        final FavoriteModel image = favouriteEntities.get(position);
+        final FavoriteModel image = arrayList.get(position);
 
         // holder.favorite.setImageDrawable(R.drawable.ic_menu_gallery);
         // loading images from Unsplash
@@ -124,8 +124,8 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.MyView
                             mPopupWindow.dismiss();
                         } else {
                             //image.setDesc(desc);
-                            desc = editDesc.getText().toString();
-                            updateDesc(image, desc);
+                            image.setDesc(editDesc.getText().toString());
+                            updateDesc(image, position);
                         }
 
                     }
@@ -138,7 +138,6 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.MyView
         holder.thumbnail_favorite.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-//                Toast.makeText(mContext, "Long Click", Toast.LENGTH_SHORT).show();
                 deleteImage(image.getId(), position);
                 return false;
             }
@@ -146,7 +145,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.MyView
     }
 
     private synchronized void deleteImage(final String id, int position) {
-        realm = Realm.getDefaultInstance();
+
         final FavouriteEntity delete = realm.where(FavouriteEntity.class)
                 .equalTo("id", id)
                 .findFirst();
@@ -157,22 +156,21 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.MyView
                 delete.deleteFromRealm();
             }
         });
-        favouriteEntities.remove(position);
+        arrayList.remove(position);
         notifyDataSetChanged();
 
     }
 
     @Override
     public int getItemCount() {
-        return favouriteEntities.size();
+        return arrayList.size();
     }
 
-    private void updateDesc(final FavoriteModel model, final String desc) {
-        realm = Realm.getDefaultInstance();
+    private void updateDesc(final FavoriteModel model, final int position) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-
+                Log.d("Dev" , "DESC "+ desc);
                 FavouriteEntity fav = new FavouriteEntity();
                 fav.setId(model.getId());
                 fav.setrUrl(model.getrUrl());
@@ -182,6 +180,8 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.MyView
                 fav.setDesc(desc);
                 realm.copyToRealmOrUpdate(fav);
                 mPopupWindow.dismiss();
+                arrayList.set(position,model);
+                notifyDataSetChanged();
             }
         });
     }

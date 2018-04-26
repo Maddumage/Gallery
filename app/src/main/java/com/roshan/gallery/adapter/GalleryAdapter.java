@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
     private Context mContext;
     private boolean isFavoriteClick = false;
     private PopupWindow mPopupWindow;
-    private List<ImageModel> favorite_images;
     private OnFavoriteListener listener;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -67,6 +67,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
 
         //holder.title.setText("" + image.getId());
         holder.like.setText("" + image.getLike());
+        Log.d("Dev", "ImageId : "+ image.getId() +" IsFav " + image.isFavorite());
         if (image.isFavorite()) {
             holder.favorite.setImageResource(R.drawable.ic_action_star_gold);
         }
@@ -84,11 +85,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
                 listener.onClick(image);
                 if (!image.isFavorite() && !isFavoriteClick) {
                     isFavoriteClick = true;
-                    favorite_images = new ArrayList<>();
-                    favorite_images.add(image);
                     holder.favorite.setImageResource(R.drawable.ic_action_star_gold);
                 } else {
-                    favorite_images.remove(image);
                     isFavoriteClick = false;
                     holder.favorite.setImageResource(R.drawable.ic_action_star);
                 }
@@ -160,6 +158,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
 
     public void setListener(OnFavoriteListener listener){
         this.listener = listener;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @Override

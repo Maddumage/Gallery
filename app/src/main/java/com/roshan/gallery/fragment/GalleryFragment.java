@@ -15,7 +15,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -32,8 +31,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 public class GalleryFragment extends Fragment implements GalleryAdapter.OnFavoriteListener {
 
@@ -41,11 +43,12 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnFavori
     private RecyclerView recyclerView;
 
     private static final String url = "https://api.unsplash.com/photos/?client_id=cc506a9dd764cf4cc5bbe085fd95b7961afded842cd02c6ab3ea75bd5fea5514&per_page=20";
-    private ArrayList<ImageModel> images;
+    private ArrayList<ImageModel> imageList;
     private ProgressDialog pDialog;
     private GalleryAdapter mAdapter;
     private String TAG = GalleryFragment.class.getSimpleName();
     private Realm realm;
+    private TreeSet<String> favImageList;
 
     public GalleryFragment() {
 
@@ -61,8 +64,8 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnFavori
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_gallery, container, false);
         pDialog = new ProgressDialog(getContext());
-        images = new ArrayList<>();
-        mAdapter = new GalleryAdapter(getContext(), images);
+        imageList = new ArrayList<>();
+        mAdapter = new GalleryAdapter(getContext(), imageList);
 
         recyclerView = view.findViewById(R.id.recycler_view);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
@@ -72,8 +75,20 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnFavori
         mAdapter.setListener(this);
         recyclerView.setAdapter(mAdapter);
         realm = Realm.getDefaultInstance();
+        getFavImages();
         fetchImages();
         return view;
+    }
+
+    private void getFavImages() {
+        favImageList = new TreeSet<>();
+        RealmQuery<FavouriteEntity> query = realm.where(FavouriteEntity.class);
+        RealmResults<FavouriteEntity> list = query.findAll();
+        for (int i = 0; i < list.size(); i++) {
+            FavouriteEntity ob = list.get(i);
+            favImageList.add(ob.getId());
+        }
+
     }
 
     private void fetchImages() {
@@ -88,7 +103,7 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnFavori
                         Log.d(TAG, response.toString());
                         pDialog.hide();
 
-                        images.clear();
+                        imageList.clear();
                         for (int i = 0; i < response.length(); i++) {
                             try {
                                 JSONObject object = response.getJSONObject(i);
@@ -106,8 +121,10 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnFavori
 
                                 JSONObject user = object.getJSONObject("user");
                                 image.setOwner(user.getString("name"));
-                                images.add(image);
-
+                                boolean isFav = favImageList.contains(image.getId());
+                                image.setFavorite(isFav);
+                                imageList.add(image);
+                                //Log.d("Dev", "Id : " + i +" ImgId : "+ image.getId() +" IsFav " + isFav );
                             } catch (JSONException e) {
                                 Log.e(TAG, "Json parsing error: " + e.getMessage());
                             }
