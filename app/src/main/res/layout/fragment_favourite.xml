@@ -3,9 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_favorite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Favourite"
-        android:textSize="24dp"/>
+        android:clipToPadding="false"
+        android:scrollbars="vertical" />
 </android.support.constraint.ConstraintLayout>

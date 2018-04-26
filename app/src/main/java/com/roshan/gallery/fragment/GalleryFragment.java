@@ -15,6 +15,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -87,7 +88,9 @@ public class GalleryFragment extends Fragment {
                             try {
                                 JSONObject object = response.getJSONObject(i);
                                 Image image = new Image();
-                                //image.setName(object.getString("name"));
+                                image.setId(object.getString("id"));
+                                image.setWidth(object.getInt("width"));
+                                image.setHeight(object.getInt("height"));
                                 image.setLike(object.getInt("likes"));
 
                                 JSONObject url = object.getJSONObject("urls");
@@ -96,6 +99,8 @@ public class GalleryFragment extends Fragment {
                                 image.setFull(url.getString("full"));
                                 //image.setTimestamp(object.getString("timestamp"));
 
+                                JSONObject user = object.getJSONObject("user");
+                                image.setOwner(user.getString("name"));
                                 images.add(image);
 
                             } catch (JSONException e) {

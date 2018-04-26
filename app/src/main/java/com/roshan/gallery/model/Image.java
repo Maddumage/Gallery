@@ -8,6 +8,11 @@ public class Image implements Serializable{
     private String small, regular, full;
     private int like;
     private String description;
+    private boolean isFavorite;
+    private int width;
+    private int height;
+    private String owner;
+
 
     public Image() {
     }
@@ -68,4 +73,36 @@ public class Image implements Serializable{
     public void setDescription(String description) {
         this.description = description;
     }
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
 }
