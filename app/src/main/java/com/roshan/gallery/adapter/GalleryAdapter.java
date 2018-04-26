@@ -4,10 +4,8 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,7 +18,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.roshan.gallery.R;
-import com.roshan.gallery.model.Image;
+import com.roshan.gallery.model.ImageModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +27,12 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHolder> {
 
-    private List<Image> images;
+    private List<ImageModel> images;
     private Context mContext;
     private boolean isFavoriteClick = false;
     private PopupWindow mPopupWindow;
-    private List<Image> favorite_images;
+    private List<ImageModel> favorite_images;
+    private OnFavoriteListener listener;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, like;
@@ -49,7 +48,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
     }
 
 
-    public GalleryAdapter(Context context, List<Image> images) {
+    public GalleryAdapter(Context context, List<ImageModel> images) {
         this.mContext = context;
         this.images = images;
     }
@@ -64,7 +63,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
-        final Image image = images.get(position);
+        final ImageModel image = images.get(position);
 
         //holder.title.setText("" + image.getId());
         holder.like.setText("" + image.getLike());
@@ -82,6 +81,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
         holder.favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                listener.onClick(image);
                 if (!image.isFavorite() && !isFavoriteClick) {
                     isFavoriteClick = true;
                     favorite_images = new ArrayList<>();
@@ -98,7 +98,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
         holder.thumbnail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Clicked", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(mContext, "Clicked", Toast.LENGTH_SHORT).show();
                 // Initialize a new instance of LayoutInflater service
                 LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
 
@@ -107,8 +107,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
                 // Initialize a new instance of popup window
                 mPopupWindow = new PopupWindow(
                         customView,
-                        920,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
+                        980,
+                        1280
                 );
                 mPopupWindow.setOutsideTouchable(false);
                 mPopupWindow.setFocusable(true);
@@ -124,7 +124,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
                 TextView owner = customView.findViewById(R.id.tv_thumbnail_owner);
                 ImageView imageView = customView.findViewById(R.id.image_thumbnail);
                 Button btnClose = customView.findViewById(R.id.btn_close_window);
-                Glide.with(mContext).load(image.getFull())
+                Glide.with(mContext).load(image.getRegular())
                         .thumbnail(0.5f)
                         .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -152,6 +152,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
 //                return false;
 //            }
 //        });
+    }
+
+    public interface OnFavoriteListener{
+        public void onClick(ImageModel model);
+    }
+
+    public void setListener(OnFavoriteListener listener){
+        this.listener = listener;
     }
 
     @Override
@@ -207,4 +215,5 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
 //
 //        }
 //    }
+
 }

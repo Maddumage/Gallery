@@ -23,7 +23,8 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.roshan.gallery.R;
 import com.roshan.gallery.adapter.GalleryAdapter;
 import com.roshan.gallery.app.AppController;
-import com.roshan.gallery.model.Image;
+import com.roshan.gallery.entity.FavouriteEntity;
+import com.roshan.gallery.model.ImageModel;
 import com.roshan.gallery.utills.GridSpacingItemDecoration;
 
 import org.json.JSONArray;
@@ -32,16 +33,19 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class GalleryFragment extends Fragment {
+import io.realm.Realm;
+
+public class GalleryFragment extends Fragment implements GalleryAdapter.OnFavoriteListener {
 
     View view;
     private RecyclerView recyclerView;
 
     private static final String url = "https://api.unsplash.com/photos/?client_id=cc506a9dd764cf4cc5bbe085fd95b7961afded842cd02c6ab3ea75bd5fea5514&per_page=20";
-    private ArrayList<Image> images;
+    private ArrayList<ImageModel> images;
     private ProgressDialog pDialog;
     private GalleryAdapter mAdapter;
     private String TAG = GalleryFragment.class.getSimpleName();
+    private Realm realm;
 
     public GalleryFragment() {
 
@@ -65,8 +69,9 @@ public class GalleryFragment extends Fragment {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        mAdapter.setListener(this);
         recyclerView.setAdapter(mAdapter);
-
+        realm = Realm.getDefaultInstance();
         fetchImages();
         return view;
     }
@@ -87,7 +92,7 @@ public class GalleryFragment extends Fragment {
                         for (int i = 0; i < response.length(); i++) {
                             try {
                                 JSONObject object = response.getJSONObject(i);
-                                Image image = new Image();
+                                ImageModel image = new ImageModel();
                                 image.setId(object.getString("id"));
                                 image.setWidth(object.getInt("width"));
                                 image.setHeight(object.getInt("height"));
@@ -124,5 +129,28 @@ public class GalleryFragment extends Fragment {
     private int dpToPx(int dp) {
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
+
+    @Override
+    public void onClick(final ImageModel model) {
+       // Toast.makeText(getActivity(), model.getOwner(), Toast.LENGTH_SHORT).show();
+
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+
+                FavouriteEntity fav = new FavouriteEntity();
+                fav.setOwner(model.getOwner());
+                fav.setDesc("Sample Desc");
+                fav.setlUrl(model.getFull());
+                fav.setsUrl(model.getSmall());
+                fav.setrUrl(model.getRegular());
+                fav.setId(model.getId());
+                realm.copyToRealmOrUpdate(fav);
+            }
+        });
+
+
     }
 }

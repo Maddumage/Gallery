@@ -18,15 +18,17 @@ import android.view.MenuItem;
 import com.roshan.gallery.R;
 import com.roshan.gallery.fragment.FavouriteFragment;
 import com.roshan.gallery.fragment.GalleryFragment;
+import com.roshan.gallery.listener.OnFragmentChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener {
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private OnFragmentChangeListener favListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         adapter.addFragment(new GalleryFragment(), "Gallery");
         adapter.addFragment(new FavouriteFragment(), "Favourite");
         viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(this);
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        if (position == 1) {
+            favListener.onPageLoad();
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -95,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
+        finish();
     }
 
     @Override
@@ -142,5 +163,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void setFavListener(OnFragmentChangeListener listener) {
+        this.favListener = listener;
     }
 }

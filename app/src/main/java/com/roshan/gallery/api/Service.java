@@ -8,7 +8,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.roshan.gallery.activity.MainActivity;
-import com.roshan.gallery.model.Image;
+import com.roshan.gallery.model.ImageModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,11 +20,11 @@ public class Service extends Volley {
 
     private static final String url = "https://api.unsplash.com/photos/?client_id=cc506a9dd764cf4cc5bbe085fd95b7961afded842cd02c6ab3ea75bd5fea5514&per_page=20";
     private JsonArrayRequest arrayRequest;
-    private ArrayList<Image> images;
+    private ArrayList<ImageModel> images;
     private ProgressDialog pDialog;
     private String TAG = MainActivity.class.getSimpleName();
 
-    public ArrayList<Image> getRandomImages() {
+    public ArrayList<ImageModel> getRandomImages() {
         arrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -35,7 +35,7 @@ public class Service extends Volley {
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject object = response.getJSONObject(i);
-                        Image image = new Image();
+                        ImageModel image = new ImageModel();
                         //image.setName(object.getString("name"));
                         image.setLike(object.getInt("likes"));
 
