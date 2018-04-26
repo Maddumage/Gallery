@@ -22,6 +22,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.roshan.gallery.R;
 import com.roshan.gallery.model.Image;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
@@ -32,6 +33,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
     private Context mContext;
     private boolean isFavoriteClick = false;
     private PopupWindow mPopupWindow;
+    private List<Image> favorite_images;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, like;
@@ -82,8 +84,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
             public void onClick(View v) {
                 if (!image.isFavorite() && !isFavoriteClick) {
                     isFavoriteClick = true;
+                    favorite_images = new ArrayList<>();
+                    favorite_images.add(image);
                     holder.favorite.setImageResource(R.drawable.ic_action_star_gold);
                 } else {
+                    favorite_images.remove(image);
                     isFavoriteClick = false;
                     holder.favorite.setImageResource(R.drawable.ic_action_star);
                 }
