@@ -41,6 +41,3 @@ Unsplash is an  online photo gallery and also they provide API to use photos fro
 * user can add, delete, update description from the favorite items
 * Delete favorite item from the list
 
-
-### Screenshots
-
