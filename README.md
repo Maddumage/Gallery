@@ -41,3 +41,16 @@ Unsplash is an  online photo gallery and also they provide API to use photos fro
 * user can add, delete, update description from the favorite items
 * Delete favorite item from the list
 
+-----------------------------------------------------------------------------
+
+### Screenshots
+
+![alt text](https://github.com/Maddumage/Gallery/tree/master/screenshots/2018_04_27_00.27.16.png)
+
+![alt text](https://github.com/Maddumage/Gallery/tree/master/screenshots/2018_04_27_00.29.28..png)
+
+![alt text](https://github.com/Maddumage/Gallery/tree/master/screenshots/2018_04_27_00.30.19.png)
+
+![alt text](https://github.com/Maddumage/Gallery/tree/master/screenshots/2018_04_27_00.31.52.png)
+
+![alt text](https://github.com/Maddumage/Gallery/tree/master/screenshots/2018_04_27_00.32.47.png)
