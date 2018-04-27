@@ -23,8 +23,10 @@ import com.roshan.gallery.R;
 import com.roshan.gallery.adapter.GalleryAdapter;
 import com.roshan.gallery.app.AppController;
 import com.roshan.gallery.entity.FavouriteEntity;
+import com.roshan.gallery.listener.OnFragmentChangeListener;
 import com.roshan.gallery.model.ImageModel;
-import com.roshan.gallery.utills.GridSpacingItemDecoration;
+import com.roshan.gallery.util.GridSpacingItemDecoration;
+import com.roshan.gallery.util.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,7 +72,7 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnFavori
         recyclerView = view.findViewById(R.id.recycler_view);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, Utils.dpToPx(getContext(), 10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         mAdapter.setListener(this);
         recyclerView.setAdapter(mAdapter);
@@ -143,14 +145,10 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnFavori
         AppController.getInstance().addToRequestQueue(req);
     }
 
-    private int dpToPx(int dp) {
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
-    }
 
     @Override
     public void onClick(final ImageModel model) {
-       // Toast.makeText(getActivity(), model.getOwner(), Toast.LENGTH_SHORT).show();
+        // Toast.makeText(getActivity(), model.getOwner(), Toast.LENGTH_SHORT).show();
 
 
         realm.executeTransaction(new Realm.Transaction() {
@@ -167,7 +165,6 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnFavori
                 realm.copyToRealmOrUpdate(fav);
             }
         });
-
 
     }
 }

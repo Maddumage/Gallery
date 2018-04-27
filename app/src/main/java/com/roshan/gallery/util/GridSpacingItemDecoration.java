@@ -1,4 +1,4 @@
-package com.roshan.gallery.utills;
+package com.roshan.gallery.util;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

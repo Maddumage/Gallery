@@ -21,7 +21,8 @@ import com.roshan.gallery.adapter.FavoriteAdapter;
 import com.roshan.gallery.entity.FavouriteEntity;
 import com.roshan.gallery.listener.OnFragmentChangeListener;
 import com.roshan.gallery.model.FavoriteModel;
-import com.roshan.gallery.utills.GridSpacingItemDecoration;
+import com.roshan.gallery.util.GridSpacingItemDecoration;
+import com.roshan.gallery.util.Utils;
 
 import java.util.ArrayList;
 
@@ -57,7 +58,7 @@ public class FavouriteFragment extends Fragment implements OnFragmentChangeListe
         recyclerView = view.findViewById(R.id.recycler_view);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, Utils.dpToPx(getContext(), 10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         //getFavImages();
 
@@ -65,12 +66,6 @@ public class FavouriteFragment extends Fragment implements OnFragmentChangeListe
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setFavListener(this);
         return view;
-    }
-
-
-    private int dpToPx(int dp) {
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 
     @Override
