@@ -1,11 +1,8 @@
 package com.roshan.gallery.activity;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
@@ -14,7 +11,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -22,14 +18,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bumptech.glide.util.Util;
 import com.roshan.gallery.R;
-import com.roshan.gallery.adapter.GalleryAdapter;
 import com.roshan.gallery.fragment.FavouriteFragment;
 import com.roshan.gallery.fragment.GalleryFragment;
 import com.roshan.gallery.listener.OnFragmentChangeListener;
@@ -56,8 +51,6 @@ public class MainActivity extends AppCompatActivity
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        //checkConnection();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -96,19 +89,12 @@ public class MainActivity extends AppCompatActivity
                 builder.create();
                 builder.show();
             } catch (Exception e) {
-                //Log.d(Constants.TAG, "Show Dialog: " + e.getMessage());
+                Log.d("Exception", "Show Dialog: " + e.getMessage());
             }
         }
 
 
     }
-
-    // Method to manually check connection status
-    private void checkConnection() {
-        boolean isConnected = ConnectivityReceiver.isOnline();
-        showSnack(isConnected);
-    }
-
 
     // Showing the status in Snackbar
     private void showSnack(boolean isConnected) {

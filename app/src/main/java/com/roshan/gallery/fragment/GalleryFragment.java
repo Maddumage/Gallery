@@ -2,7 +2,6 @@ package com.roshan.gallery.fragment;
 
 
 import android.app.ProgressDialog;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,7 +10,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +21,6 @@ import com.roshan.gallery.R;
 import com.roshan.gallery.adapter.GalleryAdapter;
 import com.roshan.gallery.app.AppController;
 import com.roshan.gallery.entity.FavouriteEntity;
-import com.roshan.gallery.listener.OnFragmentChangeListener;
 import com.roshan.gallery.model.ImageModel;
 import com.roshan.gallery.util.GridSpacingItemDecoration;
 import com.roshan.gallery.util.Utils;
@@ -36,7 +33,6 @@ import java.util.ArrayList;
 import java.util.TreeSet;
 
 import io.realm.Realm;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 public class GalleryFragment extends Fragment implements GalleryAdapter.OnFavoriteListener {
@@ -84,8 +80,8 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnFavori
 
     private void getFavImages() {
         favImageList = new TreeSet<>();
-        RealmQuery<FavouriteEntity> query = realm.where(FavouriteEntity.class);
-        RealmResults<FavouriteEntity> list = query.findAll();
+        //RealmQuery<FavouriteEntity> query = realm.where(FavouriteEntity.class);
+        RealmResults<FavouriteEntity> list = realm.where(FavouriteEntity.class).findAll();
         for (int i = 0; i < list.size(); i++) {
             FavouriteEntity ob = list.get(i);
             favImageList.add(ob.getId());
@@ -123,8 +119,7 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnFavori
 
                                 JSONObject user = object.getJSONObject("user");
                                 image.setOwner(user.getString("name"));
-                                boolean isFav = favImageList.contains(image.getId());
-                                image.setFavorite(isFav);
+                                image.setFavorite(favImageList.contains(image.getId()));
                                 imageList.add(image);
                                 //Log.d("Dev", "Id : " + i +" ImgId : "+ image.getId() +" IsFav " + isFav );
                             } catch (JSONException e) {
@@ -149,8 +144,6 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnFavori
     @Override
     public void onClick(final ImageModel model) {
         // Toast.makeText(getActivity(), model.getOwner(), Toast.LENGTH_SHORT).show();
-
-
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {

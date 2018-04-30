@@ -19,12 +19,12 @@ import java.util.ArrayList;
 public class Service extends Volley {
 
     private static final String url = "https://api.unsplash.com/photos/?client_id=cc506a9dd764cf4cc5bbe085fd95b7961afded842cd02c6ab3ea75bd5fea5514&per_page=20";
-    private JsonArrayRequest arrayRequest;
-    private ArrayList<ImageModel> images;
-    private ProgressDialog pDialog;
-    private String TAG = MainActivity.class.getSimpleName();
+    private static JsonArrayRequest arrayRequest;
+    private static ArrayList<ImageModel> images;
+    private static ProgressDialog pDialog;
+    private static String TAG = MainActivity.class.getSimpleName();
 
-    public ArrayList<ImageModel> getRandomImages() {
+    public static ArrayList<ImageModel> getRandomImages() {
         arrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
